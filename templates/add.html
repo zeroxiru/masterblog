@@ -1,0 +1,32 @@
+<!--<form method="POST" action="/update_country">-->
+<!--    <label for="username">Username:</label><br>-->
+<!--    <input type="username" id="username" name="username" readonly><br>-->
+<!--    <label for="country">Country:</label><br>-->
+<!--    <input type="text" id="country" name="country"><br>-->
+<!--    <label for="age">Age:</label><br>-->
+<!--    <input type="age" id="age" name="age" readonly><br>-->
+<!--    <input type="submit" value="Submit">-->
+<!--</form>-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add a blog post </title>
+</head>
+<body>
+    <h2>Insert a post here</h2>
+    <form method="POST" action="/add">
+        <label for="author">Author Name:</label>
+        <input type="text" id="author" name="author" required><br><br>
+
+        <label for="title">Blog's title:</label>
+        <input type="text" id="title" name="title" required><br><br>
+
+         <label for="content">Blog Content:</label>
+        <textarea id="content" name="content" required></textarea><br><br>
+
+
+        <input type="submit" value="Add Blog" >
+    </form>
+</body>
+</html>
