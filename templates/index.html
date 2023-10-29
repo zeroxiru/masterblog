@@ -16,9 +16,14 @@
         <div class="content">
         <p>{{post.content|safe}}</p>
         </div>
-        <form method="POST" action="/delete/{{post.id}}">
-            <input type="submit" value="Delete">
+        <form method="POST" action="{{ url_for('delete', post_id=post.id) }}">
+        <input type="submit" value="Delete">
         </form>
+
+        <form method="POST" action="{{ url_for('update', post_id=post.id) }}">
+        <input type="submit" value="Update">
+        </form>
+
     </div>
      {% endfor %}
 

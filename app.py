@@ -58,6 +58,22 @@ def get_next_id(blogs):
         return 1
     return  max(blog['id'] for blog in blogs) + 1
 
+# Function to fetch a blog post by id
+def get_blog_post_id(post_id):
+    for post in loads_blogs():
+        if post['id'] == post_id:
+            return post
+    return None
+
+# Function to update a blog post
+def update_blog_post(post_id, updated_data):
+    for post in loads_blogs():
+        if post['id'] == post_id:
+            post.update(updated_data)
+            break
+
+
+
 
 # adding new blogs to the json file
 @app.route('/add', methods=['GET', 'POST'])
@@ -130,17 +146,36 @@ def delete(post_id):
         updated_blogs = [blog for blog in blogs if blog['id'] != post_id]
         save_blogs(updated_blogs)
 
-        return redirect(url_for(index))
-    # Handle get request to display the  delete confirmation page
-    post =  next((blog for blog in loads_blogs() if blog['id'] == post_id), None)
-    if post:
-        return render_template('delete_confirmation.html', post=post)
-    else:
-        return 'Blog post not found', 404
+        return redirect(url_for('index', deleted=True))
+
+    if request.method == 'GET':
+        # Handle get request to display the  delete confirmation page
+        post = next((blog for blog in loads_blogs() if blog['id'] == post_id), None)
+        if post:
+            return render_template('delete_confirmation.html', post=post)
+        else:
+            return 'Blog post not found', 404
 
 
+@app.route('/update/<int:post_id>', methods=['GET', 'POST'])
+def update(post_id):
+    post = get_blog_post_id(post_id)
 
+    if post is None:
+        return "Blog post not found", 404
 
+    if request.method == 'POST':
+
+        blogs = loads_blogs()
+
+        updated_title = request.form['title']
+        updated_content = request.form['content']
+        updated_data = {'title': updated_title, 'content': updated_content}
+
+        update_blog_post(post_id, updated_data)
+
+        return redirect(url_for('index'))
+    return render_template('blog_update.html', post=post)
 
 
 @app.route('/')
