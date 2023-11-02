@@ -23,6 +23,9 @@
                 </div>
 
                 <div class="button-container">
+                    <form method="GET" action="{{ url_for('add_blog') }}">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                     </form>
                     <form method="POST" action="{{ url_for('delete', post_id=post.id) }}">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
