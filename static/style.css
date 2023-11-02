@@ -25,3 +25,14 @@ h1 {
 .post p {
     margin: 10px 0;
 }
+
+.button-container {
+    display: flex;          /* Use flexbox layout */
+    justify-content: center;       /* Center the buttons horizontally */
+    align-items: center;           /* Center the buttons vertically */
+    gap: 10px;
+}
+
+.button-container form {
+    margin-right: 10px;     /* Add some margin between buttons */
+}

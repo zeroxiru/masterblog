@@ -1,32 +1,38 @@
-<!--<form method="POST" action="/update_country">-->
-<!--    <label for="username">Username:</label><br>-->
-<!--    <input type="username" id="username" name="username" readonly><br>-->
-<!--    <label for="country">Country:</label><br>-->
-<!--    <input type="text" id="country" name="country"><br>-->
-<!--    <label for="age">Age:</label><br>-->
-<!--    <input type="age" id="age" name="age" readonly><br>-->
-<!--    <input type="submit" value="Submit">-->
-<!--</form>-->
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add a blog post </title>
+    <title>Add a blog post</title>
+    <!-- Add the Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h2>Insert a post here</h2>
-    <form method="POST" action="/add">
-        <label for="author">Author Name:</label>
-        <input type="text" id="author" name="author" required><br><br>
-
-        <label for="title">Blog's title:</label>
-        <input type="text" id="title" name="title" required><br><br>
-
-         <label for="content">Blog Content:</label>
-        <textarea id="content" name="content" required></textarea><br><br>
-
-
-        <input type="submit" value="Add Blog" >
-    </form>
+    <div class="container">
+        <h2>Insert a post here</h2>
+        <form method="POST" action="/add">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="name">Author Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="title">Blog's title:</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="content">Blog Content:</label>
+                <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Blog</button>
+        </form>
+    </div>
+    <!-- Add the Bootstrap JS and jQuery scripts here if needed -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

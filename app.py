@@ -4,12 +4,10 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for session security (replace with a secure key)
+
 # next_id = 1  # Initialize next_id with an appropriate value
 
 
-
-
-# create a function to load existing blog data from the json file
 
 def loads_blogs():
     """
@@ -19,7 +17,7 @@ def loads_blogs():
         List[dict]: A list of blog posts where each post is represented as a dictionary.
         """
     try:
-        with open('blog.json', 'r') as file_obj:
+        with open('blogs.json', 'r') as file_obj:
             blogs = json.load(file_obj)
     except (FileNotFoundError, json.JSONDecodeError):
         blogs = []
@@ -38,7 +36,7 @@ def save_blogs(blogs):
         Returns:
         None
         """
-    with open('blog.json', 'w') as file_obj:
+    with open('blogs.json', 'w') as file_obj:
         json.dump(blogs, file_obj, indent=2)
 
 # Function to get next available id
@@ -56,8 +54,7 @@ def get_next_id(blogs):
     """
     if not blogs:
         return 1
-    return  max(blog['id'] for blog in blogs) + 1
-
+    return max(blog['id'] for blog in blogs) + 1
 # Function to fetch a blog post by id
 def get_blog_post_id(post_id):
     for post in loads_blogs():
@@ -66,11 +63,15 @@ def get_blog_post_id(post_id):
     return None
 
 # Function to update a blog post
-def update_blog_post(post_id, updated_data):
-    for post in loads_blogs():
-        if post['id'] == post_id:
-            post.update(updated_data)
-            break
+# def update_blog_post(post_id, updated_data):
+#     blogs = loads_blogs()
+#     for post in blogs:
+#         if post['id'] == post_id:
+#             post.update(updated_data)
+#
+#     # Save the updated data back to the JSON file
+#     with open('blogs.json', 'w') as json_file:
+#         json.dump(blogs, json_file, indent=4)
 
 
 
@@ -94,7 +95,7 @@ def add_blog():
 
     global next_id  # access the global variable
     if request.method == 'POST':
-        author = request.form['author']
+        author = request.form['name']
         title = request.form['title']
         content = request.form['content']
 
@@ -104,7 +105,7 @@ def add_blog():
             next_id = get_next_id(blogs)
 
             # creating new blog
-            new_blog = {'id': next_id, 'author': author, 'title': title, 'content': content}
+            new_blog = {'id': next_id, 'name': author, 'title': title, 'content': content}
 
             # append the new blog  to the list of the blogs
             blogs.append(new_blog)
@@ -152,30 +153,86 @@ def delete(post_id):
         # Handle get request to display the  delete confirmation page
         post = next((blog for blog in loads_blogs() if blog['id'] == post_id), None)
         if post:
-            return render_template('delete_confirmation.html', post=post)
+            return render_template('delete_confirmation.html', post="GET")
         else:
             return 'Blog post not found', 404
 
+list_of_blogs = loads_blogs()
 
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
 def update(post_id):
     post = get_blog_post_id(post_id)
+
 
     if post is None:
         return "Blog post not found", 404
 
     if request.method == 'POST':
 
-        blogs = loads_blogs()
+        updated_name = request.form.get('name')
+        updated_title = request.form.get('title')
+        updated_content = request.form.get('content')
 
-        updated_title = request.form['title']
-        updated_content = request.form['content']
-        updated_data = {'title': updated_title, 'content': updated_content}
+        # update the post
+        for blog in list_of_blogs:
+            if blog['id'] == post_id:
+                blog['name'] = updated_name
+                blog['title'] = updated_title
+                blog['content'] = updated_content
 
-        update_blog_post(post_id, updated_data)
+        #Save the updated data back to the JSON file
+        with open('blogs.json', 'w') as json_file:
+            json.dump(list_of_blogs, json_file, indent=4)
+
 
         return redirect(url_for('index'))
+    return render_template('blog_update.html', post='GET')
+
+@app.route('/blog_update/<int:post_id>', methods=['GET'])
+def blog_update(post_id):
+    """
+    Renders the blog update page with the details of the selected blog post.
+
+    Args:
+        post_id (int): The ID of the blog post to be updated.
+
+    Returns:
+        Rendered HTML page with the blog post details to populate the form.
+    """
+    post = get_blog_post_id(post_id)  # Fetch the details of the selected blog post
+    if post is None:
+        return "Blog post not found", 404  # Handle the case where the post is not found
+
     return render_template('blog_update.html', post=post)
+
+
+@app.route('/like/<int:post_id>', methods=['POST'])
+def like_post(post_id):
+    # Fetch the post from your data (e.g., JSON file)
+    post = get_blog_post_id(post_id)
+
+    if post is not None:
+        if 'likes' not in post:
+            post['likes'] = 0
+
+        # Increment the 'likes' count for the post
+        post['likes'] += 1
+
+        for blog in list_of_blogs:
+            if blog['id'] == post_id:
+                blog['likes'] = post['likes']
+
+
+        # Update the post in your data (e.g., save it back to the JSON file)
+
+        # You can save the updated post back to the JSON file here
+    with open('blogs.json', 'w') as json_file:
+        json.dump(list_of_blogs, json_file, indent=4)
+
+
+    # Redirect back to the index page
+    return redirect(url_for('index'))
+
 
 
 @app.route('/')
@@ -189,7 +246,7 @@ def index():
 
     # add code here to fetch the  posts from a file
     posts = loads_blogs()
-    print(posts)
+    # print(posts)
     return render_template('index.html', posts=posts)
 
 
