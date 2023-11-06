@@ -62,6 +62,8 @@ def get_blog_post_id(post_id):
             return post
     return None
 
+
+
 # Function to update a blog post
 # def update_blog_post(post_id, updated_data):
 #     blogs = loads_blogs()
